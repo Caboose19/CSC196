@@ -42,21 +42,27 @@ namespace nc
 		float Length() const;
 		float LengthSqr() const;
 
-		float Distance(const Vector2& v1, const Vector2& v2);
+		static float Distance(const Vector2& v1, const Vector2& v2);
 
 		Vector2 Noramlized() const;
 		void Normalize();
 
+
+		static Vector2 Rotate(const Vector2& v, float radians);
+
 	};
-	float Vector2::Length() const
+
+
+
+	inline float Vector2::Length() const
 	{
 		return std::sqrt((x * x) + (y * y));
 	}
-	float Vector2::LengthSqr() const
+	inline float Vector2::LengthSqr() const
 	{
 		return std::sqrt((x * x) + (y * y));
 	}
-	float Vector2::Distance(const Vector2& v1, const Vector2& v2)
+	inline float Vector2::Distance(const Vector2& v1, const Vector2& v2)
 	{
 		Vector2 v = v1 - v2;
 		return v.Length();
@@ -64,13 +70,13 @@ namespace nc
 
 
 
-	Vector2 Vector2::Noramlized() const
+	inline Vector2 Vector2::Noramlized() const
 	{
 		float length = Length();
 		Vector2 n = (length == 0.0f) ? Vector2{0.0f, 0.0f} : *this / length;
 		return n;
 	}
-	void Vector2::Normalize()
+	inline void Vector2::Normalize()
 	{
 		float length = Length();
 		if (length == 0.0f)
@@ -82,6 +88,14 @@ namespace nc
 		{
 			*this /=  length;
 		}
+	}
+
+	inline Vector2 Vector2::Rotate(const Vector2& v, float radians)
+	{
+		float x = v.x * std::cos(radians) - v.y * std::sin(radians);
+		float y = v.x * std::sin(radians) + v.y * std::cos(radians);
+
+		return{ x,y };
 	}
 
 }
