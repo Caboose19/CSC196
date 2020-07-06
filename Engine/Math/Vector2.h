@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cmath"
 
 namespace nc
 {
@@ -49,6 +50,13 @@ namespace nc
 
 
 		static Vector2 Rotate(const Vector2& v, float radians);
+
+		static const Vector2 Left;
+		static const Vector2 Right;
+		static const Vector2 Up;
+		static const Vector2 Down;
+		static const Vector2 Forward;
+
 
 	};
 
