@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cmath"
-
+#include <iostream>
 namespace nc
 {
 	struct Vector2
@@ -38,7 +38,8 @@ namespace nc
 		Vector2& operator /= (float s) { x /= s; y /= s; return *this; }
 
 		Vector2 operator - () { return Vector2{ -x, -y }; }
-
+		
+		friend std::istream& operator >> (std::istream& stream, Vector2& v); // stream >> v
 
 		float Length() const;
 		float LengthSqr() const;
@@ -84,6 +85,7 @@ namespace nc
 		Vector2 n = (length == 0.0f) ? Vector2{0.0f, 0.0f} : *this / length;
 		return n;
 	}
+
 	inline void Vector2::Normalize()
 	{
 		float length = Length();

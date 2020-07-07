@@ -3,7 +3,7 @@
 #include "../Math/Vector2.h"
 #include "../Math/Color.h"
 #include <vector>
-
+#include <string>
 
 namespace nc
 {
@@ -11,36 +11,23 @@ namespace nc
 	{
 	public:
 		Shape() {}
-		Shape(const std::vector<nc::Vector2>& points, const Color& color) {}
+		Shape(const std::vector<nc::Vector2>& points, const Color& color) : m_points{ points }, m_color{ color }{}
 
-		void Draw(Core::Graphics& graphics);
+		
+
+		bool Load(const std::string& filename);
 
 		void Draw(Core::Graphics& graphics, nc::Vector2 position, float scale = 1.0f, float angle = 0.0f);
-		void SetColor(Color color);
-		const Color& GetColor() const;
-
+		
+		void SetColor(Color color) { m_color = color; }
+		const Color& GetColor() const { return m_color; }
+		
 	
 
 	private:
-		std::vector<nc::Vector2> points;
-		Color color;
+		std::vector<nc::Vector2> m_points;
+		Color m_color;
 
 	};
-
-	void Shape::Draw(Core::Graphics& graphics)
-	{
-		
-
-			for (size_t i = 0; i < points.size() - 1; i++)
-			{
-				// local / object space points
-				nc::Vector2 p1 = points[i];
-				nc::Vector2 p2 = points[i + 1];
-
-				// transform points
-
-				// draw points
-			}
-	}
 
 }

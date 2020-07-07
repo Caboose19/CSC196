@@ -13,7 +13,7 @@ namespace nc
 		Color(float r, float g, float b) : r{ r }, g{ g }, b{ b } {}
 
 		float& operator [] (size_t index);
-		//const float& operator [] (size_t index);
+		//const float& operator [] const(size_t index);
 		void Set(float r, float g, float b);
 
 		Color operator + (const Color& c) const;

@@ -1,32 +1,49 @@
-#include "core.h"
 #include "Math/Math.h"
 #include "Math/Random.h"
 #include "Math/Vector2.h"
-#include <iostream>
 #include "Math/Color.h"
-#include <Grahpics\Shape.h>
+#include "Grahpics\Shape.h"
+#include "core.h"
 #include <string>
-#include "Math/Vector2.cpp"
+#include <iostream>
+
 
 
 const size_t NUM_POINTS = 40;
 float speed = 300;
 
 
-std::vector<nc::Vector2> points = { { 0, -8 }, { 5, 8 }, { 0, 8}, { -5, 8 }, { 0, -8 } };
+std::vector<nc::Vector2> points = { { 0, -8 }, { 5, 8 }, { 0, 8 }, { -5, 8 }, { 0, -8 } };
 nc::Color color{ 0,1,1 };
-
-//nc::Shape ship{ { <points or std::vector object> }, { color values } };
+nc::Shape ship;
 
 
 nc::Vector2 position{400.0f,300.0f};
 float scale = 4.0f;
 float angle = 0.0f;
+
+float Roundtime{0};
 float frametime;
+bool gameOver{ false };
+
+DWORD prevTime;
+DWORD deltaTime;
+
+
 bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 {
 
+	DWORD time = GetTickCount();
+	deltaTime = time - prevTime;
+	prevTime = time;
+	
 	frametime = dt;
+	Roundtime += dt;
+
+	if (Roundtime > 5.0f) gameOver = true;
+
+	if (gameOver) dt = dt * 0.025f;
+
 
 
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
@@ -53,7 +70,7 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	//if (Core::Input::IsPressed('W')) { position -= nc::Vector2::Down*speed*dt; }
 	
 	//mouse follow 
-	int x;
+	/*int x;
 	int y;
 	Core::Input::GetMousePos(x, y);
 
@@ -63,48 +80,32 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	
 	//position = position + direction *5.0f;
 
-
+	*/
 	return false;
 }
 
 void Draw(Core::Graphics& graphics)
 {
 	graphics.DrawString(10, 10, std::to_string(frametime).c_str());
-
 	graphics.DrawString(10, 20, std::to_string(1.0f/frametime).c_str());
-	//rgb (8bits/1byte, 8, 8)(0-255,0-255,0-255)
+	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000.0f).c_str());
 
-	graphics.SetColor(color);
-	
-	for (size_t i = 0; i < points.size() - 1; i++)
-	{
-		//the size of my object		
-		nc::Vector2 p1 = points[i];
-		nc::Vector2 p2 =  points[i + 1];
 
-		//scale 
-		p1 = p1 * scale;
-		p2 = p2 * scale; 
+	if (gameOver) graphics.DrawString(400, 300, "Game Over");
 
-		//rotate
-		p1 = nc::Vector2::Rotate(p1, angle);
-		p2 = nc::Vector2::Rotate(p2, angle);
-
-		//translate
-		p1 = p1 + position;
-		p2 = p2 + position;
-
-		
-
-		graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
-	}
+	ship.Draw(graphics, position, scale, angle);
 
 }
 
 int main()
 {
 	DWORD ticks = GetTickCount();
-	std::cout << ticks /1000/60/60<< std::endl;
+	std::cout << ticks / 1000 / 60 / 60 << std::endl;
+	prevTime = GetTickCount();
+
+	ship.Load("ship.txt");
+	ship.SetColor(nc::Color{ 1,1,1 });
+
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);
 	Core::RegisterUpdateFn(Update);
