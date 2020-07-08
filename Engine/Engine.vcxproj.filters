@@ -41,6 +41,9 @@
     <ClInclude Include="Grahpics\Shape.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Math\transform.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -53,6 +56,12 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Math\Vector2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Color.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\transform.cpp">
       <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,8 @@
 #pragma once
-
+#include <windows.h>
 #include "cmath"
 #include <iostream>
+#include "Color.h"
 namespace nc
 {
 	struct Vector2
