@@ -8,19 +8,16 @@
 #include <iostream>
 
 
-
-const size_t NUM_POINTS = 40;
 float speed = 300;
 
-nc::Color color(0,25,1);
+nc::Color color(0.0f, 25.0f, 1.0f);
 
 nc::Shape ship;
-
 nc::Transform transform{ {400,300},{10},{0} };
 
 
-float scale = 4.0f;
-float angle = 0.0f;
+float t{ 0 };
+
 
 float Roundtime{0};
 float frametime;
@@ -40,11 +37,11 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	frametime = dt;
 	Roundtime += dt;
 
-	if (Roundtime > 5.0f) gameOver = true;
+	if (Roundtime > 15.0f) gameOver = true;
 
 	if (gameOver) dt = dt * 0.025f;
 
-
+	t = t + (dt * 5.0f);
 
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 	///Use WASD rotate and arrows move
@@ -64,9 +61,14 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	}
 
 
-	if (Core::Input::IsPressed('A')) {transform.angle = transform.angle -(dt * 3.0f); }
-	if (Core::Input::IsPressed('D')) { transform.angle = transform.angle + (dt * 3.0f); }
+	if (Core::Input::IsPressed('A')) {transform.angle = transform.angle -  (nc::DegreesToRadians(360.0f) * dt); }
+	if (Core::Input::IsPressed('D')) { transform.angle = transform.angle + (nc::DegreesToRadians(360.0f) * dt); }
 	
+	transform.position.x = nc::Clamp(transform.position.x, 0.0f, 800.0f);
+	transform.position.y = nc::Clamp(transform.position.y, 0.0f, 600.0f);
+
+	transform.position = nc::Clamp(transform.position, { -5,8 }, { 800,600 });
+
 
 	return false;
 }
@@ -77,10 +79,16 @@ void Draw(Core::Graphics& graphics)
 	graphics.DrawString(10, 20, std::to_string(1.0f/frametime).c_str());
 	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000.0f).c_str());
 
+	float v = (std::sin(t) + 1.0f) * 0.5f;
 
-	if (gameOver) graphics.DrawString(400, 300, "Game Over");
+	nc::Color c = nc::Lerp(nc::Color{ 0,0,1}, nc::Color{ 0,1,1 }, v);
+	graphics.SetColor(c);
+	nc::Vector2 p = nc::Lerp(nc::Vector2{ 400,300 }, nc::Vector2{ 100,100 }, v);
+	graphics.DrawString(p.x, p.y, "Tie Fighter");
 
-	ship.Draw(graphics, transform.position, scale, transform.angle);
+	if (gameOver) graphics.DrawString(400, 300, "Game Over!!");
+
+	ship.Draw(graphics, transform.position, transform.scale=4, transform.angle);
 
 }
 
@@ -91,7 +99,7 @@ int main()
 	prevTime = GetTickCount();
 	
 	ship.Load("ship.txt");
-	ship.SetColor(color);
+	//ship.SetColor(color);
 
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);

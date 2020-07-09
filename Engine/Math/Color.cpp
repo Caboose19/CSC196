@@ -12,8 +12,7 @@ namespace nc
 		if (line.find("{") != std::string::npos)
 		{
 
-
-			/*std::string cr = line.substr(line.find("{") + 1, line.find(",") - line.find("{") - 1);
+			std::string cr = line.substr(line.find("{") + 1, line.find(",") - line.find("{") - 1);
 			c.r = std::stof(cr);
 
 			line = line.substr(line.find(",") + 1, line.find("}")-line.find("{"));
@@ -24,7 +23,7 @@ namespace nc
 			c.g = std::stof(cg);
 
 			std::string cb = line.substr(line.find(",") + 1, line.find("}") - line.find(",") - 1);
-			c.b = std::stof(cb); */
+			c.b = std::stof(cb); 
 		}
 		return stream;
 
