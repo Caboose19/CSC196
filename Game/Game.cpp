@@ -62,13 +62,14 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	if (Core::Input::IsPressed('W')) {
 		force = nc::Vector2::Forward * speed * dt;
 		nc::Vector2 direction = force;
-		direction = nc::Vector2::Rotate(direction, transform.angle);
-		transform.position = transform.position + direction;
+		direction = nc::Vector2::Rotate(direction, player.GetTransform().angle);
+		player.GetTransform().position = player.GetTransform().position + direction;
+
 	}
 
 
-	if (Core::Input::IsPressed('A')) {transform.angle = transform.angle -  (nc::DegreesToRadians(360.0f) * dt); }
-	if (Core::Input::IsPressed('D')) { transform.angle = transform.angle + (nc::DegreesToRadians(360.0f) * dt); }
+	if (Core::Input::IsPressed('A')) {player.GetTransform().angle = player.GetTransform().angle -  (nc::DegreesToRadians(360.0f) * dt); }
+	if (Core::Input::IsPressed('D')) { player.GetTransform().angle = player.GetTransform().angle + (nc::DegreesToRadians(360.0f) * dt); }
 	
 	transform.position.x = nc::Clamp(transform.position.x, 0.0f, 800.0f);
 	transform.position.y = nc::Clamp(transform.position.y, 0.0f, 600.0f);
@@ -96,9 +97,9 @@ void Draw(Core::Graphics& graphics)
 
 	
 
-	ship.Draw(graphics, transform);
+	//ship.Draw(graphics, transform);
 	player.Draw(graphics);
-	//enemy.Draw(graphics);
+	enemy.Draw(graphics);
 }
 
 int main()
