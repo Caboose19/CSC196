@@ -3,6 +3,7 @@
 #include "Math/transform.h"
 #include "Math/Color.h"
 #include "Grahpics\Shape.h"
+#include "Object/Actor.h"
 #include "core.h"
 #include <string>
 #include <iostream>
@@ -14,6 +15,9 @@ nc::Color color(0.0f, 25.0f, 1.0f);
 
 nc::Shape ship;
 nc::Transform transform{ {400,300},{10},{0} };
+
+nc::Actor player;
+nc::Actor enemy;
 
 
 float t{ 0 };
@@ -36,6 +40,8 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	
 	frametime = dt;
 	Roundtime += dt;
+
+	
 
 	if (Roundtime > 15.0f) gameOver = true;
 
@@ -88,8 +94,11 @@ void Draw(Core::Graphics& graphics)
 
 	if (gameOver) graphics.DrawString(400, 300, "Game Over!!");
 
-	ship.Draw(graphics, transform.position, transform.scale=4, transform.angle);
+	
 
+	ship.Draw(graphics, transform);
+	player.Draw(graphics);
+	//enemy.Draw(graphics);
 }
 
 int main()
@@ -98,6 +107,9 @@ int main()
 	std::cout << ticks / 1000 / 60 / 60 << std::endl;
 	prevTime = GetTickCount();
 	
+	
+	player.Load("player.txt");
+	enemy.Load("enemy.txt");
 	ship.Load("ship.txt");
 	//ship.SetColor(color);
 

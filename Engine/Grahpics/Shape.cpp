@@ -50,7 +50,7 @@ void nc::Shape::Draw(Core::Graphics& graphics,nc::Vector2 position, float scale,
 	for (size_t i = 0; i < m_points.size() - 1; i++)
 	{
 		//the size of my object		
-		nc::Vector2 p1 =m_points[i];
+		nc::Vector2 p1 = m_points[i];
 		nc::Vector2 p2 = m_points[i + 1];
 
 		//scale 
@@ -73,5 +73,5 @@ void nc::Shape::Draw(Core::Graphics& graphics,nc::Vector2 position, float scale,
 
 void nc::Shape::Draw(Core::Graphics& graphics, const Transform& transform)
 {
-	Draw(graphics, transform.position, transform.angle, transform.scale);
+	Draw(graphics, transform.position, transform.scale, transform.angle);
 }
