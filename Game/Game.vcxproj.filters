@@ -13,10 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="actors">
+      <UniqueIdentifier>{92d36fc9-237e-41c6-91cb-415b72795fff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Actors\enemy.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\player.h">
+      <Filter>actors</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

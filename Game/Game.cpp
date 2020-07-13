@@ -9,8 +9,9 @@
 #include <iostream>
 
 
-float speed = 300;
+float speed = 3;
 
+nc::Vector2 velocity;
 nc::Color color(0.0f, 25.0f, 1.0f);
 
 nc::Shape ship;
@@ -58,26 +59,38 @@ bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
 	*/
 
 
-	nc::Vector2 force;
+	nc::Vector2 force{0,0};
 	if (Core::Input::IsPressed('W')) {
-		force = nc::Vector2::Forward * speed * dt;
-		nc::Vector2 direction = force;
-		direction = nc::Vector2::Rotate(direction, player.GetTransform().angle);
-		player.GetTransform().position = player.GetTransform().position + direction;
-
+		force = nc::Vector2::Forward * speed;
 	}
+	
+		force = nc::Vector2::Rotate(force, player.GetTransform().angle);
+		velocity = velocity + (force + dt);
+		velocity = velocity * 0.99f;
+		player.GetTransform().position = player.GetTransform().position + (velocity * dt);
 
 
 	if (Core::Input::IsPressed('A')) {player.GetTransform().angle = player.GetTransform().angle -  (nc::DegreesToRadians(360.0f) * dt); }
 	if (Core::Input::IsPressed('D')) { player.GetTransform().angle = player.GetTransform().angle + (nc::DegreesToRadians(360.0f) * dt); }
 	
-	transform.position.x = nc::Clamp(transform.position.x, 0.0f, 800.0f);
-	transform.position.y = nc::Clamp(transform.position.y, 0.0f, 600.0f);
+	if (player.GetTransform().position.x > 800) player.GetTransform().position.x = 0;
+	if (player.GetTransform().position.x < 0) player.GetTransform().position.x = 800;
+	if (player.GetTransform().position.y < 0) player.GetTransform().position.y = 600;
+	if (player.GetTransform().position.y > 600) player.GetTransform().position.y = 0;
 
-	transform.position = nc::Clamp(transform.position, { -5,8 }, { 800,600 });
+	//transform.position.x = nc::Clamp(transform.position.x, 0.0f, 800.0f);
+	//transform.position.y = nc::Clamp(transform.position.y, 0.0f, 600.0f);
+//	transform.position = nc::Clamp(transform.position, { -5,8 }, { 800,600 });
 
 
-	return false;
+	///enemy
+	nc::Vector2 direction = player.GetTransform().position - enemy.GetTransform().position;
+	nc::Vector2 enemyVelocity = direction.Noramlized() * 100.0;
+	enemy.GetTransform().position = enemy.GetTransform().position + enemyVelocity * dt;
+	enemy.GetTransform().angle = std::atan2(direction.y, direction.x) + nc::DegreesToRadians(90.0f);
+
+
+	return quit;
 }
 
 void Draw(Core::Graphics& graphics)

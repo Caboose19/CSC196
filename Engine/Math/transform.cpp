@@ -6,8 +6,13 @@ namespace nc
 	{
 
 		stream >> transform.position;
-		stream >> transform.scale;
-		stream >> transform.angle;
+		std::string line;
+		std::getline(stream, line);
+		transform.scale = stof(line);
+
+		std::getline(stream, line);
+		transform.angle = stof(line);
+		
 
 
 

@@ -16,22 +16,18 @@ bool nc::Shape::Load(const std::string& filename)
 
 		 stream >> m_color;
 
-		
-		 while (!stream.eof())
+		 std::string line;
+		 std::getline(stream, line);
+		 size_t size;
+		 size = stoi(line);
+
+		 for (size_t i = 0; i < size; i++)
 		 {
-			 Vector2 point;
-			
-			 stream >> point;
-			
-
-			 if (!stream.eof())
-			 {
-
-				 m_points.push_back(point);
-			 }
-			 
+			 Vector2 v;
+			 stream >> v;
+			 m_points.push_back(v);
 		 }
-		
+	
 
 		 //read points
 
