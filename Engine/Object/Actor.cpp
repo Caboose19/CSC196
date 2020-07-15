@@ -3,24 +3,27 @@
 #include <fstream>
 namespace nc
 {
+		void Actor::Load(std::istream & stream)
+		{
+			stream >> m_transform;
+
+			std::string shapename;
+			std::getline(stream, shapename);
+
+			m_shape.Load(shapename);
+		}
+
 	bool Actor::Load(const std::string& filename)
 	{
-	
 			bool success = false;
-		
 			std::ifstream stream(filename);
 			if (stream.is_open())
 			{
-				
 
 					// set success to true
 				success = true;
 
 				stream >> m_transform;
-
-				
-
-
 			
 			}
 			std::string shapename;

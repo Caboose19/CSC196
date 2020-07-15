@@ -21,6 +21,12 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="actors\player.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="actors\enemy.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\enemy.h">

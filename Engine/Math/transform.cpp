@@ -19,4 +19,18 @@ namespace nc
 		return stream;
 	}
 
+	void Transform::Update()
+	{
+		Matrix33 mxScale;
+		mxScale.scale(scale);
+		
+		Matrix33 mxRotate;
+		mxRotate.Rotate(angle);
+
+		Matrix33 mxt;
+		mxt.Translation(position);
+
+		matrix = mxScale * mxRotate * mxt;
+	}
+
 }

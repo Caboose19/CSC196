@@ -156,8 +156,10 @@
     <ClInclude Include="Grahpics\Shape.h" />
     <ClInclude Include="Math\Color.h" />
     <ClInclude Include="Math\Math.h" />
+    <ClInclude Include="Math\Matrix33.h" />
     <ClInclude Include="Math\transform.h" />
     <ClInclude Include="Math\Vector2.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="Object\Actor.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Random.h" />
