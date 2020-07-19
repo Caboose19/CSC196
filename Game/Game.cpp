@@ -4,51 +4,83 @@
 #include "Actors/enemy.h"
 #include "Actors/player.h"
 #include "core.h"
+#include <list>
 #include <string>
 #include <iostream>
 
+float spawntimer{ 0 };
+std::list<nc::Actor*> actors;
+template <typename T>
+nc::Actor* GetActor()
+{
+	nc::Actor* result{ nullptr };
 
+	for (nc::Actor* actor : actors)
+	{
+		result = dynamic_cast<T*>(actor);
+		if (result != nullptr) break;
+	}
 
+	return result;
+}
+template <typename T>
+std::vector<nc::Actor*> GetActors()
+{
+	std::vector<nc::Actor*> results;
 
+	for (nc::Actor* actor : actors)
+	{
+		T* result = dynamic_cast<T*>(actor);
+		if (result)
+		{
+			results.push_back(result);
+		}
+	}
 
-nc::Enemy enemy;
-nc::Player player;
+	return results;
+}
 
-float t{ 0 };
-
-float Roundtime{0};
 float frametime;
-bool gameOver{ false };
 
 DWORD prevTime;
 DWORD deltaTime;
 
 
 bool Update(float dt) //delta tiime (60 fps) (1/60 = 0.016)
-{
-
-	DWORD time = GetTickCount();
-	deltaTime = time - prevTime;
-	prevTime = time;
-	
+{ 
 	frametime = dt;
-	Roundtime += dt;
 
-
-	//if (Roundtime > 15.0f) gameOver = true;
-
-//	if (gameOver) dt = dt * 0.025f;
-
-	t = t + (dt * 5.0f);
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 	
-	//transform.position.x = nc::Clamp(transform.position.x, 0.0f, 800.0f);
-	//transform.position.y = nc::Clamp(transform.position.y, 0.0f, 600.0f);
-//	transform.position = nc::Clamp(transform.position, { -5,8 }, { 800,600 });
+	if (Core::Input::IsPressed(VK_SPACE))
+	{
+		auto actorsremove = GetActors<Enemy>();
 
-	player.Update(dt);
-	enemy.Update(dt);
+		for (auto actor : actorsremove)
+		{
+			auto iter = std::find(actors.begin(), actors.end(), actor);
+			actors.erase(iter);
+		}
+	}
+
+	spawntimer += dt;
+	if (spawntimer >= 3.0f)
+	{
+		spawntimer = 0.0f;
+		//add enemy to scene
+		Enemy* enemy = new Enemy;
+		enemy->Load("enemy.txt");
+		dynamic_cast<Enemy*>(enemy)->SetTarget(GetActor<Player>());
+		enemy->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600)};
+		dynamic_cast<Enemy*>(enemy)->SetThrust(nc::random(50, 125));
+		
+		actors.push_back(enemy);
+	}
 	
+	for (nc::Actor* actor : actors)
+	{
+		actor->Update(dt);
+	}
 	
 	return quit;
 }
@@ -57,22 +89,11 @@ void Draw(Core::Graphics& graphics)
 {
 	graphics.DrawString(10, 10, std::to_string(frametime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f/frametime).c_str());
-	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000.0f).c_str());
 
-	float v = (std::sin(t) + 1.0f) * 0.5f;
-
-	nc::Color c = nc::Lerp(nc::Color{ 0,0,1}, nc::Color{ 0,1,1 }, v);
-	graphics.SetColor(c);
-	nc::Vector2 p = nc::Lerp(nc::Vector2{ 400,300 }, nc::Vector2{ 100,100 }, v);
-	graphics.DrawString(p.x, p.y, "Tie Fighter");
-
-	if (gameOver) graphics.DrawString(400, 300, "Game Over!!");
-
-	
-
-	
-	player.Draw(graphics);
-	enemy.Draw(graphics);
+	for (nc::Actor* actor : actors)
+	{
+		actor->Draw(graphics);
+	}
 }
 
 int main()
@@ -81,11 +102,20 @@ int main()
 	std::cout << ticks / 1000 / 60 / 60 << std::endl;
 	prevTime = GetTickCount();
 	
+	Player* player = new Player;
+	player->Load("player.txt");
+	actors.push_back(player);
 	
-	player.Load("player.txt");
-	enemy.Load("enemy.txt");
-
-	enemy.SetTarget(&player);
+	for (int i = 0; i < 10; i++)
+	{
+		Enemy* enemy = new Enemy;
+		enemy->Load("enemy.txt");
+		dynamic_cast<Enemy*>(enemy)->SetThrust(nc::random(50, 125));
+		dynamic_cast<Enemy*>(enemy)->SetTarget(player);
+		enemy->GetTransform().position = nc::Vector2{nc::random(0,800),nc::random(0,600)};
+		actors.push_back(enemy);
+	}
+	
 
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);
