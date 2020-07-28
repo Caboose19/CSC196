@@ -15,12 +15,12 @@ bool nc::Shape::Load(const std::string& filename)
 		//read color
 
 		 stream >> m_color;
-
+		 //get points number
 		 std::string line;
 		 std::getline(stream, line);
 		 size_t size;
 		 size = stoi(line);
-
+		 //read points
 		 for (size_t i = 0; i < size; i++)
 		 {
 			 Vector2 v;
@@ -32,7 +32,21 @@ bool nc::Shape::Load(const std::string& filename)
 		 //read points
 
 		stream.close();
+	}	
+
+	m_radius = 0;
+
+	for (size_t i = 0; i < m_points.size(); i++)
+	{
+		nc::Vector2 p1 = m_points[1];
+
+		float length = p1.Length();
+		if (length > m_radius) m_radius = length;
 	}
+
+
+
+
 	return success;
 }
 
@@ -53,7 +67,7 @@ void nc::Shape::Draw(Core::Graphics& graphics,nc::Vector2 position, float scale,
 
 
 	Matrix33 mx;
-	mx = mxScale * mxRotate;
+	mx = mxScale * mxRotate * mxt;
 	for (size_t i = 0; i < m_points.size() - 1; i++)
 	{
 		//the size of my object		
@@ -65,9 +79,7 @@ void nc::Shape::Draw(Core::Graphics& graphics,nc::Vector2 position, float scale,
 		p2 = p2 * mx;
 		
 
-		//translate
-		p1 = p1 + position;
-		p2 = p2 + position;
+	
 
 		graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
 	}

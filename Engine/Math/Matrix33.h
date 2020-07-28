@@ -49,8 +49,8 @@ namespace nc
 		{
 			Matrix33 result;
 
-			result.m[0][0] = m[0][0] * mx.m[0][0] + m[1][0] * mx.m[0][1] + m[2][0]* mx.m[0][2];
-			result.m[1][0] = m[0][1] * mx.m[0][0] + m[1][1] * mx.m[0][1] + m[2][2] * mx.m[0][2];
+			result.m[0][0] = m[0][0] * mx.m[0][0] + m[1][0] * mx.m[0][1] + m[2][0] * mx.m[0][2];
+			result.m[0][1] = m[0][1] * mx.m[0][0] + m[1][1] * mx.m[0][1] + m[2][1] * mx.m[0][2];
 			result.m[0][2] = m[0][2] * mx.m[0][0] + m[1][2] * mx.m[0][1] + m[2][2] * mx.m[0][2];
 
 			result.m[1][0] = m[0][0] * mx.m[1][0] + m[1][0] * mx.m[1][1] + m[2][0] * mx.m[1][2];
@@ -80,8 +80,8 @@ namespace nc
 		{
 			Vector2 result;
 
-			result.x = v.x * mx.m[0][0] + v.y * mx.m[0][1] + mx.m[0][2];
-			result.y = v.x * mx.m[1][0] + v.y * mx.m[1][1] + mx.m[1][2];
+			result.x = v.x * mx.m[0][0] + v.y * mx.m[0][1] + 1 * mx.m[0][2];
+			result.y = v.x * mx.m[1][0] + v.y * mx.m[1][1] + 1 * mx.m[1][2];
 
 			return result;
 		}

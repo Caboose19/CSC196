@@ -1,7 +1,10 @@
 #include <fstream>
 #include "player.h"
 #include "Object/Actor.h"
+#include "Projectile.h"
+#include "Object/Scene.h"
 #include <Math\Math.h>
+#include "Grahpics/ParticleSystem.h"
 
 bool Player::Load(const std::string& filename)
 {
@@ -21,13 +24,27 @@ bool Player::Load(const std::string& filename)
 	}
 	return success;
 }
-	void Player::Update(float dt)
-	{
+void Player::Update(float dt)
+{
+	m_fireTimer += dt;
 
-		nc::Vector2 force{ 0,0 };
-		if (Core::Input::IsPressed('W')) {
-			force = nc::Vector2::Forward * speed;
-		}
+	if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate){
+
+	m_fireTimer = 0;
+	Projectile*projectile = new Projectile;
+	projectile->Load("Projectile.txt");
+	projectile->GetTransform().position = m_transform.position;
+	projectile->GetTransform().angle = m_transform.angle;
+
+	m_scene->AddActor(projectile);
+	}
+
+	//position
+	nc::Vector2 force{ 0,0 };
+
+	if (Core::Input::IsPressed('W')) {
+		force = nc::Vector2::Forward * speed;
+	}
 		
 	force = nc::Vector2::Rotate(force, m_transform.angle);
 	velocity = velocity + (force + dt);
@@ -43,4 +60,11 @@ bool Player::Load(const std::string& filename)
 	if (m_transform.position.y < 0) m_transform.position.y = 600;
 	if (m_transform.position.y > 600) m_transform.position.y = 0;
 
+
+	if (force.LengthSqr() > 0)
+	{
+		g_particleSystem.Create(m_transform.position, m_transform.angle, nc::PI, 1, nc::Color::yellow, 1, 50, 100);
+	}
+
+	m_transform.Update();
 }
