@@ -2,8 +2,10 @@
 #include "player.h"
 #include "Object/Actor.h"
 #include "Projectile.h"
-#include "Object/Scene.h"
+#include "Audio/AudioSystem.h"
+#include "../Game.h"
 #include <Math\Math.h>
+#include "Object/Scene.h"
 #include "Grahpics/ParticleSystem.h"
 
 bool Player::Load(const std::string& filename)
@@ -28,9 +30,12 @@ void Player::Update(float dt)
 {
 	m_fireTimer += dt;
 
-	if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate){
+	if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate)
+	{
 
 	m_fireTimer = 0;
+	g_audioSystem.PlayAudio("Laser");
+
 	Projectile*projectile = new Projectile;
 	projectile->Load("Projectile.txt");
 	projectile->GetTransform().position = m_transform.position;
@@ -67,4 +72,12 @@ void Player::Update(float dt)
 	}
 
 	m_transform.Update();
+}
+
+void Player::OnCollision(Actor* actor)
+{
+	if (actor->GetType() == eType::ENEMY)
+	{
+		m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+	}
 }

@@ -1,6 +1,6 @@
 #include "core.h"
 #include "Game.h"
-
+#include "Audio/AudioSystem.h"
 
 Game game;
 
@@ -19,6 +19,7 @@ void Draw(Core::Graphics& graphics)
 
 int main()
 {
+	g_audioSystem.Startup();
 	game.Startup();
 	
 	char name[] = "CSC196";
@@ -30,4 +31,5 @@ int main()
 	Core::Shutdown();
 
 	game.Shutdown();
+	g_audioSystem.Shutdown();
 }

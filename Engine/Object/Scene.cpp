@@ -44,21 +44,21 @@ namespace nc
 
 		
 
-		//remove destoryed actors
-		auto iter = m_actors.begin();
-		while (iter != m_actors.end())
-		{
-			if ((*iter)->IsDestory())
+			//remove destoryed actors
+			auto iter = m_actors.begin();
+			while (iter != m_actors.end())
 			{
-				(*iter)->IsDestory();
-				delete* iter;
-				iter = m_actors.erase(iter);
+				if ((*iter)->IsDestory())
+				{
+					(*iter)->IsDestory();
+					delete* iter;
+					iter = m_actors.erase(iter);
+				}
+				else
+				{
+					iter++;
+				}
 			}
-			else
-			{
-				iter++;
-			}
-		}
 
 		}
 		for (Actor* actor : m_actors)

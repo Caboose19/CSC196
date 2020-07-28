@@ -1,24 +1,27 @@
 #pragma once
 #include <list>
 #include "core.h"
+#include <vector>
+class Game;
+
 namespace nc
 {
+
 	class Scene
 	{
 	public:
-		void AddActor(class Actor* actor);
-
 		void Startup();
 		void Shutdown();
 
 		void Update(float dt);
 		void Draw(Core::Graphics& graphics);
 
-	
+
+		void AddActor(class Actor* actor);
 		void RemoveActor(class Actor* object);
 
 		template <typename T>
-		T* GetActor() 
+		T* GetActor()
 		{
 			T* actor = { nullptr };
 			for (Actor* a : m_actors)
@@ -27,7 +30,7 @@ namespace nc
 				if (actor) break;
 			}
 			return actor;
-		}
+		};
 
 		template <typename T>
 		std::vector<T*> GetActors()
@@ -42,9 +45,13 @@ namespace nc
 				}
 			}
 			return actors;
-		}
+		};
 
+		void SetGame(Game* game) { m_game = game; }
+		Game* GetGame() { return m_game; }
+	
 	private:
+		Game* m_game;
 		std::list<class Actor*> m_actors;
 	};
 }

@@ -3,6 +3,9 @@
 #include "Object/Actor.h"
 #include <Math\Math.h>
 #include "Grahpics/ParticleSystem.h"
+#include "Object/Scene.h"
+#include "Audio/AudioSystem.h"
+#include "../Game.h"
 
 bool Enemy::Load(const std::string& filename)
 {
@@ -34,8 +37,11 @@ void Enemy::OnCollision(Actor* actor)
 {
 	if (actor->GetType() == eType::PROJECTILE)
 	{
+		g_audioSystem.PlayAudio("X-wing_Boom");
 		m_destory = true;
-	
+
+		//set Game Score
+		m_scene->GetGame()->AddPoints(100);
 
 		nc::Color colors[] = { nc::Color::white,nc::Color::blue, nc::Color::yellow };
 		nc::Color color = colors[rand() % 3];
