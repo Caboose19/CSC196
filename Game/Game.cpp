@@ -57,18 +57,28 @@
 
 			Locator* locator = new Locator;
 			locator->GetTransform().position = nc::Vector2{ 0,4 };
-			player->SetChild(locator);
+			locator->GetTransform().angle = nc::DegreesToRadians(90);
+			player->AddChild(locator);
+
+			locator = new Locator;
+			locator->GetTransform().position = nc::Vector2{ 0,-4 };
+			locator->GetTransform().angle = nc::DegreesToRadians(90);
+			player->AddChild(locator);
 			
 			m_scene.AddActor(player);
 
-			for (int i = 0; i < 10; i++)
+			for (size_t i = 0; i < 5; i++)
 			{
 				Enemy* enemy = new Enemy;
 				enemy->Load("enemy.txt");
 				enemy->SetTarget(m_scene.GetActor<Player>());
-				enemy->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600) };
-				m_scene.AddActor(enemy);
 
+				float distance = nc::random(300, 600);
+				float angle = nc::random(0, nc::TWO_PI);
+				nc::Vector2 position = nc::Vector2{ 400, 300 } +nc::Vector2::Rotate(nc::Vector2{ distance, 0.0f }, angle);
+
+				enemy->GetTransform().position = position;
+				m_scene.AddActor(enemy);
 			}
 			m_state = eState::GAME;
 		}

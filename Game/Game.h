@@ -3,41 +3,41 @@
 #include "Object/Scene.h"
 
 
-class Game
-{
-public:
-	enum class eState
+	class Game
 	{
-		INIT,
-		TITLE,
-		START_GAME,
-		PLAYER_DEAD,
-		GAME_WAIT,
-		GAME,
-		GAME_OVER
+	public:
+		enum class eState
+		{
+			INIT,
+			TITLE,
+			START_GAME,
+			PLAYER_DEAD,
+			GAME_WAIT,
+			GAME,
+			GAME_OVER
+		};
+
+	public:
+		void Startup();
+		void Shutdown();
+
+		bool Update(float dt);
+		void Draw(Core::Graphics& graphics);
+
+		void AddPoints(int points) { m_score += points; }
+		void SetState(eState state) { m_state = state; }
+
+	protected:
+		eState m_state{ eState::TITLE };
+		int m_lives{ 3 };
+		int m_score{ 0 };
+		float m_spawntimer{ 0 };
+		float m_statetimer{ 0 };
+
+		float m_frametime;
+		nc::Scene m_scene;
+
+		static const int WIDTH;
+		static const int HEIGHT;
 	};
-
-public:
-	void Startup();
-	void Shutdown();
-
-	bool Update(float dt);
-	void Draw(Core::Graphics& graphics);
-
-	void AddPoints(int points) { m_score += points; }
-	void SetState(eState state) { m_state = state; }
-
-protected:
-	eState m_state{ eState::TITLE };
-	int m_lives{ 3 };
-	int m_score{ 0 };
-	float m_spawntimer{ 0 };
-	float m_statetimer{ 0 };
-
-	float m_frametime;
-	nc::Scene m_scene;
-
-	static const int WIDTH;
-	static const int HEIGHT;
-};
 

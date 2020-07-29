@@ -21,20 +21,23 @@ namespace nc
 		Actor(const Transform& transform, const Shape& shape) :m_transform{ transform }, m_shape{ shape } {}
 		virtual ~Actor() {}
 
+		virtual void Destroy();
+
+
 		virtual eType GetType() = 0;
-	
+
 
 		virtual bool Load(const std::string& filename);
 		virtual void Load(std::istream& stream);
-	
+
 		virtual	void Update(float dt);
 		virtual void Draw(Core::Graphics& graphics);
 
 
-		virtual void OnCollision(Actor* actor) {}
+		virtual void OnCollision(Actor* actor) {};
 
-		void SetDestroy(bool destroy = true) { m_destory = destroy; }
-		bool IsDestory() { return false; }
+		void SetDestroy(bool destroy = true) { m_destroy = destroy; }
+		bool IsDestory() { return m_destroy; }
 
 		float GetRadius();
 
@@ -42,20 +45,19 @@ namespace nc
 		Transform& GetTransform() { return m_transform; } // return the transform;
 		Shape& GetShape() { return m_shape; }// return the shape
 
-		void SetChild(Actor* child) { m_child = child; child->m_parent = this; }
-		void SetParent(Actor* parent) { m_parent = parent; parent->m_child = this; }
-
-		Actor* GetChild() { return m_child; }
+		void AddChild(Actor* child);
 		Actor* GetParent() { return m_parent; }
 
 	protected:
-		bool m_destory{ false };
+		bool m_destroy{ false };
 		class Scene* m_scene{ nullptr };
 		Transform m_transform;
 		Shape m_shape;
 
-		Actor* m_child { nullptr };
+
 		Actor* m_parent{ nullptr };
+		std::vector<Actor*>m_children;
+		
 	};
 }
 

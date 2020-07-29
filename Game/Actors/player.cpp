@@ -8,88 +8,97 @@
 #include "Object/Scene.h"
 #include "Grahpics/ParticleSystem.h"
 
-bool Player::Load(const std::string& filename)
-{
-	bool success = false;
-
-	std::ifstream stream(filename);
-	if (stream.is_open())
+	bool Player::Load(const std::string& filename)
 	{
-		success = true;
+		bool success = false;
 
-		Actor::Load(stream);
+		std::ifstream stream(filename);
+		if (stream.is_open())
+		{
+			success = true;
 
-		stream >> speed;
-		stream >> rotationRate;
+			Actor::Load(stream);
 
-		stream.close();
+			stream >> speed;
+			stream >> rotationRate;
+
+			stream.close();
+		}
+		return success;
 	}
-	return success;
-}
-void Player::Update(float dt)
-{
-	m_fireTimer += dt;
-
-	if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate)
+	void Player::Update(float dt)
 	{
+		m_fireTimer += dt;
 
-	m_fireTimer = 0;
-	g_audioSystem.PlayAudio("Laser");
+		if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate)
+		{
 
-	Projectile*projectile = new Projectile;
-	projectile->Load("Projectile.txt");
-	projectile->GetTransform().position = m_transform.position;
-	projectile->GetTransform().angle = m_transform.angle;
+		m_fireTimer = 0;
+		g_audioSystem.PlayAudio("Laser");
 
-	m_scene->AddActor(projectile);
-	}
+		Projectile*projectile = new Projectile;
+		projectile->Load("Projectile.txt");
+		projectile->GetTransform().position = m_transform.position;
+		projectile->GetTransform().angle = m_transform.angle;
 
-	//position
-	nc::Vector2 force{ 0,0 };
+		m_scene->AddActor(projectile);
+		}
 
-	if (Core::Input::IsPressed('W')) {
-		force = nc::Vector2::Forward * speed;
-	}
+		//position
+		nc::Vector2 force{ 0,0 };
+
+		if (Core::Input::IsPressed('W')) {
+			force = nc::Vector2::Forward * speed;
+		}
 		
-	force = nc::Vector2::Rotate(force, m_transform.angle);
-	velocity = velocity + (force + dt);
-	velocity = velocity * 0.99f;
-	m_transform.position = m_transform.position + (velocity * dt);
+		force = nc::Vector2::Rotate(force, m_transform.angle);
+		velocity = velocity + (force + dt);
+		velocity = velocity * 0.99f;
+		m_transform.position = m_transform.position + (velocity * dt);
+
+		float torque = 0;
+		if (Core::Input::IsPressed('A')) { torque = -nc::DegreesToRadians(rotationRate); }
+		if (Core::Input::IsPressed('D')) { torque = nc::DegreesToRadians(rotationRate); }
+
+		m_angularVelocity = m_angularVelocity + torque * dt;
+		m_angularVelocity = m_angularVelocity * 0.95f;
+		m_transform.angle = m_transform.angle + m_angularVelocity * dt;
+
+		if (m_transform.position.x > 800) m_transform.position.x = 0;
+		if (m_transform.position.x < 0) m_transform.position.x = 800;
+		if (m_transform.position.y < 0) m_transform.position.y = 600;
+		if (m_transform.position.y > 600) m_transform.position.y = 0;
 
 
-	if (Core::Input::IsPressed('A')) { m_transform.angle = m_transform.angle - (nc::DegreesToRadians(360.0f) * dt); }
-	if (Core::Input::IsPressed('D')) { m_transform.angle = m_transform.angle + (nc::DegreesToRadians(360.0f) * dt); }
+		if (force.LengthSqr() > 0)
+		{
+			Actor* locator = m_children[0];
+			g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(),
+				locator->GetTransform().matrix.GetAngle() + nc::PI,1,20, nc::Color::yellow, 1, 50, 100);
 
-	if (m_transform.position.x > 800) m_transform.position.x = 0;
-	if (m_transform.position.x < 0) m_transform.position.x = 800;
-	if (m_transform.position.y < 0) m_transform.position.y = 600;
-	if (m_transform.position.y > 600) m_transform.position.y = 0;
+			 locator = m_children[1];
+			g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(),
+				locator->GetTransform().matrix.GetAngle() + nc::PI, 1, 20, nc::Color::yellow, 1, 50, 100);
+		}
 
+		m_transform.Update();
 
-	if (force.LengthSqr() > 0)
-	{
-		Actor* locator = m_child;
-		g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle + nc::PI, 1,20, nc::Color::yellow, 1, 50, 100);
+		for (Actor* child : m_children)
+		{
+			child->Update(dt);
+		}
 	}
 
-	m_transform.Update();
-
-	if (m_child)
+	void Player::OnCollision(Actor* actor)
 	{
-		m_child->Update(dt);
+		if (actor->GetType() == eType::ENEMY)
+		{
+			m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
+			m_destroy = true;
+
+			nc::Color colors[] = { nc::Color::red,nc::Color::blue, nc::Color::yellow };
+			nc::Color color = colors[rand() % 3];
+
+			g_particleSystem.Create(m_transform.position, 0, 180, 30, nc::Color{ 1,1,1 }, 1, 100, 200);
+		}
 	}
-}
-
-void Player::OnCollision(Actor* actor)
-{
-	if (actor->GetType() == eType::ENEMY)
-	{
-		m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
-		m_destory = true;
-
-		nc::Color colors[] = { nc::Color::red,nc::Color::blue, nc::Color::yellow };
-		nc::Color color = colors[rand() % 3];
-
-		g_particleSystem.Create(m_transform.position, 0, 180, 30, nc::Color{ 1,1,1 }, 1, 100, 200);
-	}
-}

@@ -1,35 +1,39 @@
 #include "core.h"
 #include "Game.h"
 #include "Audio/AudioSystem.h"
+#include <time.h>
 
-Game game;
+	Game game;
 
 
-bool Update(float dt) 
-{ 
-	bool quit = game.Update(dt);
+	bool Update(float dt) 
+	{ 
+		bool quit = game.Update(dt);
 
-	return quit;
-}
+		return quit;
+	}
 
-void Draw(Core::Graphics& graphics)
-{
-	game.Draw(graphics);
-}
+	void Draw(Core::Graphics& graphics)
+	{
+		game.Draw(graphics);
+	}
 
-int main()
-{
-	g_audioSystem.Startup();
-	game.Startup();
+	int main()
+	{
 	
-	char name[] = "CSC196";
-	Core::Init(name, 800 ,600);
-	Core::RegisterUpdateFn(Update);
-	Core::RegisterDrawFn(Draw);
+		srand(static_cast<unsigned int>(time(NULL)));
 
-	Core::GameLoop();
-	Core::Shutdown();
+		g_audioSystem.Startup();
+		game.Startup();
+	
+		char name[] = "CSC196";
+		Core::Init(name, 800 ,600);
+		Core::RegisterUpdateFn(Update);
+		Core::RegisterDrawFn(Draw);
 
-	game.Shutdown();
-	g_audioSystem.Shutdown();
-}
+		Core::GameLoop();
+		Core::Shutdown();
+
+		game.Shutdown();
+		g_audioSystem.Shutdown();
+	}

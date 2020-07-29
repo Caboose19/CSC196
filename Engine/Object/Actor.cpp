@@ -13,7 +13,16 @@ namespace nc
 			m_shape.Load(shapename);
 		}
 
-	bool Actor::Load(const std::string& filename)
+		void Actor::Destroy()
+		{
+			for (auto child : m_children)
+			{
+				delete child;
+			}
+			m_children.clear();
+		}
+
+		bool Actor::Load(const std::string& filename)
 	{
 			bool success = false;
 			std::ifstream stream(filename);
@@ -50,6 +59,11 @@ namespace nc
 	float Actor::GetRadius()
 	{
 		return m_shape.GetRadius() * m_transform.scale;
+	}
+	void Actor::AddChild(Actor* child)
+	{
+		child->m_parent = this;
+		m_children.push_back(child);
 	}
 }
 

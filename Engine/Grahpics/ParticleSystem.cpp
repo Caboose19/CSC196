@@ -54,7 +54,7 @@ namespace nc
 	void particlesystem::Create(const Vector2& position, float angle, float angleRange, size_t count,
 								const Color& color, float lifetime, float speedMin, float speedMax)
 	{
-		for (size_t i = 0; i < m_size; i++)
+		for (size_t i = 0; i < count; i++)
 		{
 			Particle* p = GetFreePArticle();
 			if (p)

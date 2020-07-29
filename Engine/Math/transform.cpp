@@ -32,8 +32,16 @@ namespace nc
 
 	void Transform::Update(const Matrix33& mx)
 	{
-		Update();
-		matrix = matrix * mx;
+		Matrix33 mxScale;
+		mxScale.scale(scale);
+
+		Matrix33 mxRotate;
+		mxRotate.Rotate(angle);
+
+		Matrix33 mxt;
+		mxt.Translation(position);
+
+		matrix = mxScale * mxRotate * mxt *mx;
 	}
 
 }

@@ -23,7 +23,7 @@ void Projectile::Update(float dt)
 {
 	m_lifetime -= dt;
 
-	if (m_lifetime <= 0) m_destory;
+	if (m_lifetime <= 0) m_destroy;
 
 	nc::Vector2 direction = nc::Vector2::Rotate(nc::Vector2::Forward, m_transform.angle);
 	nc::Vector2 velocity = direction * m_thrust;
@@ -42,7 +42,7 @@ void Projectile::OnCollision(Actor* actor)
 {
 	if (actor->GetType() == eType::ENEMY)
 	{
-		m_destory = true;
+		m_destroy = true;
 
 
 	}
