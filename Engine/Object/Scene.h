@@ -19,6 +19,7 @@ namespace nc
 
 		void AddActor(class Actor* actor);
 		void RemoveActor(class Actor* object);
+		void RemoveAllActors();
 
 		template <typename T>
 		T* GetActor()

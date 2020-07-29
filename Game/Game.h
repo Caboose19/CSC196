@@ -11,6 +11,8 @@ public:
 		INIT,
 		TITLE,
 		START_GAME,
+		PLAYER_DEAD,
+		GAME_WAIT,
 		GAME,
 		GAME_OVER
 	};
@@ -30,6 +32,7 @@ protected:
 	int m_lives{ 3 };
 	int m_score{ 0 };
 	float m_spawntimer{ 0 };
+	float m_statetimer{ 0 };
 
 	float m_frametime;
 	nc::Scene m_scene;

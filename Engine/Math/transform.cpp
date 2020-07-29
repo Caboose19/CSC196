@@ -12,9 +12,6 @@ namespace nc
 
 		std::getline(stream, line);
 		transform.angle = stof(line);
-		
-
-
 
 		return stream;
 	}
@@ -31,6 +28,12 @@ namespace nc
 		mxt.Translation(position);
 
 		matrix = mxScale * mxRotate * mxt;
+	}
+
+	void Transform::Update(const Matrix33& mx)
+	{
+		Update();
+		matrix = matrix * mx;
 	}
 
 }

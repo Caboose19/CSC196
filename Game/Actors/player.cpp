@@ -68,16 +68,28 @@ void Player::Update(float dt)
 
 	if (force.LengthSqr() > 0)
 	{
-		g_particleSystem.Create(m_transform.position, m_transform.angle, nc::PI, 1, nc::Color::yellow, 1, 50, 100);
+		Actor* locator = m_child;
+		g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle + nc::PI, 1,20, nc::Color::yellow, 1, 50, 100);
 	}
 
 	m_transform.Update();
+
+	if (m_child)
+	{
+		m_child->Update(dt);
+	}
 }
 
 void Player::OnCollision(Actor* actor)
 {
 	if (actor->GetType() == eType::ENEMY)
 	{
-		m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+		m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
+		m_destory = true;
+
+		nc::Color colors[] = { nc::Color::red,nc::Color::blue, nc::Color::yellow };
+		nc::Color color = colors[rand() % 3];
+
+		g_particleSystem.Create(m_transform.position, 0, 180, 30, nc::Color{ 1,1,1 }, 1, 100, 200);
 	}
 }

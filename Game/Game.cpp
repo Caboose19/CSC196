@@ -4,6 +4,7 @@
 #include "Grahpics\Shape.h"
 #include "Actors/enemy.h"
 #include "Actors/player.h"
+#include "Actors/Locator.h"
 #include "Grahpics/ParticleSystem.h"
 #include "Audio/AudioSystem.h"
 #include <list>
@@ -39,18 +40,25 @@
 		switch (m_state)
 		{
 		case Game::eState::INIT:
-		
+
 			break;
 		case Game::eState::TITLE:
 			if (Core::Input::IsPressed(VK_SPACE))
 			{
 				m_state = eState::START_GAME;
+				m_score = 0;
+				m_lives = 3;
 			}
 			break;
 		case Game::eState::START_GAME:
 		{
 			Player* player = new Player;
 			player->Load("player.txt");
+
+			Locator* locator = new Locator;
+			locator->GetTransform().position = nc::Vector2{ 0,4 };
+			player->SetChild(locator);
+			
 			m_scene.AddActor(player);
 
 			for (int i = 0; i < 10; i++)
@@ -64,9 +72,9 @@
 			}
 			m_state = eState::GAME;
 		}
-			break;
+		break;
 		case Game::eState::GAME:
-			
+		{
 			int i = 0;
 
 			m_spawntimer += dt;
@@ -80,13 +88,40 @@
 				enemy->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600) };
 				m_scene.AddActor(enemy);
 			}
-		
+		}
+		break;
+		case Game::eState::PLAYER_DEAD:
+		{
+			auto enemies = m_scene.GetActors<Enemy>();
+			for (auto enemy : enemies)
+			{
+				enemy->SetTarget(nullptr);
+			}
+			m_lives = m_lives - 1;
+			m_state = (m_lives == 0) ? eState::GAME_OVER : eState::GAME_WAIT;
+			m_statetimer = 3.0f;
+		}
 			break;
-		//case Game::eState::GAME_OVER:
+		case Game::eState::GAME_WAIT:
+			m_statetimer -= dt;
+			if (m_statetimer <= 0)
+			{
+				m_scene.RemoveAllActors();
+				m_state = eState::START_GAME;
+			}
 			break;
-		//default:
+		case Game::eState::GAME_OVER:
+			m_statetimer -= dt;
+			if (m_statetimer <= 0)
+			{
+				m_scene.RemoveAllActors();
+				m_state = eState::TITLE;
+			}
+			break;
+		default:
 			break;
 		}
+	
 
 		
 
@@ -114,8 +149,6 @@
 	{
 		//graphics.DrawString(10, 10, std::to_string(m_frametime).c_str());
 		//graphics.DrawString(10, 20, std::to_string(1.0f / m_frametime).c_str());
-	
-	
 		g_particleSystem.Draw(graphics);
 	
 		switch (m_state)
@@ -129,9 +162,6 @@
 		case Game::eState::START_GAME:
 			break;
 		case Game::eState::GAME:
-			graphics.SetColor(nc::Color::white);
-			graphics.DrawString(700, 10, std::to_string(m_score).c_str());
-			m_scene.Draw(graphics);
 			break;
 		case Game::eState::GAME_OVER:
 			graphics.SetColor(nc::Color::red);
@@ -140,4 +170,8 @@
 		default:
 			break;
 		}
+			graphics.SetColor(nc::Color::white);
+			graphics.DrawString(700, 10, std::to_string(m_score).c_str());
+			graphics.DrawString(700, 20, ("Lives:" + std::to_string(m_lives)).c_str());
+		m_scene.Draw(graphics);
 	}

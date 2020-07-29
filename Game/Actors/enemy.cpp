@@ -24,10 +24,14 @@ bool Enemy::Load(const std::string& filename)
 }
 void Enemy::Update(float dt)
 {
-	nc::Vector2 direction = m_target->GetTransform().position - m_transform.position;
-	nc::Vector2 enemyVelocity = direction.Noramlized() * 0.0;
-	Enemy::GetTransform().position = Enemy::GetTransform().position + enemyVelocity * dt;
-	Enemy::GetTransform().angle = std::atan2(direction.y, direction.x) + nc::DegreesToRadians(90.0f);
+	nc::Vector2 direction;
+	if (m_target)
+	{
+		direction = m_target->GetTransform().position - m_transform.position;
+		m_transform.angle = std::atan2(direction.y, direction.x) + nc::DegreesToRadians(90.0f);
+	};
+	nc::Vector2 enemyVelocity = direction.Noramlized() * 50.0;
+	m_transform.position = m_transform.position + enemyVelocity * dt;
 
 	m_transform.Update();
 
