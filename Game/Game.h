@@ -14,10 +14,14 @@
 			PLAYER_DEAD,
 			GAME_WAIT,
 			GAME,
+			BOSS_BATTLE,
+			CREDITS,
 			GAME_OVER
-		};
-
+		};	
+		
 	public:
+
+		int m_lives{ 3 };
 		void Startup();
 		void Shutdown();
 
@@ -29,14 +33,16 @@
 
 	protected:
 		eState m_state{ eState::TITLE };
-		int m_lives{ 3 };
+	
 		int m_score{ 0 };
 		float m_spawntimer{ 0 };
 		float m_statetimer{ 0 };
 
+
+
 		float m_frametime;
 		nc::Scene m_scene;
-
+		int BOSS_SPAWN = 1;
 		static const int WIDTH;
 		static const int HEIGHT;
 	};

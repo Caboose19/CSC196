@@ -13,7 +13,11 @@ namespace nc
 			PLAYER,
 			ENEMY,
 			PROJECTILE,
-			LOCATOR
+			LOCATOR,
+			TIE,
+			FASTERFIRE,
+			BOSS,
+			DEATHSTARLASER
 		};
 
 	public:

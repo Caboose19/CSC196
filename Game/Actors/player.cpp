@@ -28,8 +28,13 @@
 	}
 	void Player::Update(float dt)
 	{
+	
+		m_abilitytimer += dt;
 		m_fireTimer += dt;
-
+		if (m_abilitytimer >= 5.0f)
+		{
+			m_fireRate = 0.6f;
+		}
 		if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate)
 		{
 
@@ -91,7 +96,7 @@
 
 	void Player::OnCollision(Actor* actor)
 	{
-		if (actor->GetType() == eType::ENEMY)
+		if (actor->GetType() == eType::ENEMY|| actor->GetType() == eType::BOSS)
 		{
 			m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
 			m_destroy = true;
@@ -100,5 +105,18 @@
 			nc::Color color = colors[rand() % 3];
 
 			g_particleSystem.Create(m_transform.position, 0, 180, 30, nc::Color{ 1,1,1 }, 1, 100, 200);
+		}
+		if (actor->GetType() == eType::DEATHSTARLASER)
+		{
+			
+			m_abilitytimer = 0.0f;
+			m_fireRate = 0.00000000001f;
+		
+		}
+		if (actor->GetType() == eType::FASTERFIRE)
+		{
+			Game game;
+			game.m_lives += 1;
+
 		}
 	}

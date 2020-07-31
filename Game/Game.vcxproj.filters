@@ -36,6 +36,18 @@
     <ClCompile Include="Actors\Locator.cpp">
       <Filter>actors</Filter>
     </ClCompile>
+    <ClCompile Include="Actors\Tie.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\DeathStar.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\Boss.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="Actors\Life.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors\enemy.h">
@@ -51,6 +63,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Actors\Locator.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\Tie.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\DeathStar.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\Boss.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Actors\Life.h">
       <Filter>actors</Filter>
     </ClInclude>
   </ItemGroup>

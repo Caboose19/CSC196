@@ -159,10 +159,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actors\Boss.cpp" />
+    <ClCompile Include="Actors\DeathStar.cpp" />
     <ClCompile Include="actors\enemy.cpp" />
+    <ClCompile Include="Actors\Life.cpp" />
     <ClCompile Include="Actors\Locator.cpp" />
     <ClCompile Include="actors\player.cpp" />
     <ClCompile Include="Actors\Projectile.cpp" />
+    <ClCompile Include="Actors\Tie.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -177,10 +181,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actors\Boss.h" />
+    <ClInclude Include="Actors\DeathStar.h" />
     <ClInclude Include="Actors\enemy.h" />
+    <ClInclude Include="Actors\Life.h" />
     <ClInclude Include="Actors\Locator.h" />
     <ClInclude Include="Actors\player.h" />
     <ClInclude Include="Actors\Projectile.h" />
+    <ClInclude Include="Actors\Tie.h" />
     <ClInclude Include="Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

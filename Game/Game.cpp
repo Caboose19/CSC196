@@ -10,17 +10,24 @@
 #include <list>
 #include <string>
 #include <iostream>
-
+#include "Actors/Tie.h"
+#include <algorithm>
+#include "Actors/DeathStar.h"
+#include "Actors/Boss.h"
+#include "Actors/Life.h"
+#include "Actors/Projectile.h"
 
 	const int Game::WIDTH = 800;
 	const int Game::HEIGHT = 600;
+	Player life;
+	
 	void Game::Startup()
 	{
 		g_particleSystem.Startup();
 		m_scene.Startup();
 		m_scene.SetGame(this);
 
-
+		
 		g_audioSystem.AddAudio("Laser", "Tie_Laser2.WAV");
 		g_audioSystem.AddAudio("X-wing_Boom", "Explosion.WAV");
 	}
@@ -67,7 +74,7 @@
 			
 			m_scene.AddActor(player);
 
-			for (size_t i = 0; i < 5; i++)
+			for (size_t i = 0; i < 10; i++)
 			{
 				Enemy* enemy = new Enemy;
 				enemy->Load("enemy.txt");
@@ -88,18 +95,90 @@
 			int i = 0;
 
 			m_spawntimer += dt;
-			if (m_spawntimer >= 3.0f)
+			if (m_score <= 1000)
 			{
-				m_spawntimer = 0.0f;
-				//add enemy to m_scene
-				Enemy* enemy = new Enemy;
-				enemy->Load("enemy.txt");
-				enemy->SetTarget(m_scene.GetActor<Player>());
-				enemy->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600) };
-				m_scene.AddActor(enemy);
+				if (m_spawntimer >= 3.0f)
+				{
+					m_spawntimer = 0.0f;
+					
+
+				
+					//add enemy to m_scene
+					Enemy* enemy = new Enemy;
+					enemy->Load("enemy.txt");
+					enemy->SetTarget(m_scene.GetActor<Player>());
+					enemy->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600) };
+					m_scene.AddActor(enemy);
+
+					Tie* tie = new Tie;
+					tie->Load("player.txt");
+					tie->SetTarget(m_scene.GetActor<Enemy>());
+					tie->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600) };
+					m_scene.AddActor(tie);
+				}
 			}
+			
+			 if(m_score >= 1200 && m_score <= 1400)
+			{
+				
+				if (m_spawntimer >= 3.0f)
+				{
+					m_spawntimer = 0.0f;
+					//add enemy to m_scene
+					Enemy* enemy = new Enemy;
+					enemy->Load("Luke.txt");
+					enemy->SetTarget(m_scene.GetActor<Player>());
+					enemy->GetTransform().position = nc::Vector2{ nc::random(0,800),nc::random(0,600) };
+					m_scene.AddActor(enemy);
+
+
+					DeathStar* star = new DeathStar;
+					star->Load("LaserPickup.txt");
+					star->GetTransform().position = nc::Vector2{ 300,300 };
+					m_scene.AddActor(star);
+
+				}
+			}
+	
+			  if(m_score == 1600)
+			 {
+				 m_state = eState::BOSS_BATTLE;
+			 }
+
+			  if (m_score >= 5000)
+			  {
+				  m_state = eState::CREDITS;
+			  }
 		}
 		break;
+		case Game::eState::BOSS_BATTLE:
+		{
+			
+			if (m_score == 1600)
+			{
+			
+				m_score = 1700;
+			}
+			for (size_t i = 0; i < 1; i++)
+			{
+				Boss* boss = new Boss;
+				boss->Load("Hard.txt");
+				boss->SetTarget(m_scene.GetActor<Player>());
+
+				float distance = nc::random(300, 600);
+				float angle = nc::random(0, nc::TWO_PI);
+				nc::Vector2 position = nc::Vector2{ 400, 300 } +nc::Vector2::Rotate(nc::Vector2{ distance, 0.0f }, angle);
+
+				boss->GetTransform().position = position;
+				m_scene.AddActor(boss);
+
+				m_state = eState::GAME;
+			}
+
+
+			
+		}
+			break;
 		case Game::eState::PLAYER_DEAD:
 		{
 			auto enemies = m_scene.GetActors<Enemy>();
@@ -107,7 +186,9 @@
 			{
 				enemy->SetTarget(nullptr);
 			}
+			m_spawntimer = 0.0f;
 			m_lives = m_lives - 1;
+			
 			m_state = (m_lives == 0) ? eState::GAME_OVER : eState::GAME_WAIT;
 			m_statetimer = 3.0f;
 		}
@@ -117,7 +198,17 @@
 			if (m_statetimer <= 0)
 			{
 				m_scene.RemoveAllActors();
-				m_state = eState::START_GAME;
+			
+				m_state = (m_score >= 1700) ? eState::BOSS_BATTLE : eState::START_GAME;
+			}
+			break;
+		case Game::eState::CREDITS:
+			m_scene.RemoveAllActors();
+			m_statetimer += dt;
+			if (m_statetimer >=10 )
+			{
+				
+				m_state = eState::TITLE;
 			}
 			break;
 		case Game::eState::GAME_OVER:
@@ -167,11 +258,19 @@
 			break;
 		case Game::eState::TITLE:
 			graphics.SetColor(nc::Color::red);
-			graphics.DrawString(400, 300, "Tie Fighter");
+			graphics.DrawString(300, 300, "Tie Fighter");
 			break;
 		case Game::eState::START_GAME:
 			break;
 		case Game::eState::GAME:
+			break;
+		case Game::eState::CREDITS:
+			graphics.SetColor(nc::Color::red);
+			graphics.DrawString(325, 100, "GAME OVER");
+			graphics.DrawString(325, 150, "YOU DID IT ");
+			graphics.DrawString(325, 200, "YOU CRUSHED THE REBEL SCUM");
+			graphics.DrawString(325, 250, "SPECIAL THANKS TO PROFFESOR MAPLE ");
+			graphics.DrawString(325, 300, "FOR TEACHING THE CODE THAT WROTE THE GAME");
 			break;
 		case Game::eState::GAME_OVER:
 			graphics.SetColor(nc::Color::red);

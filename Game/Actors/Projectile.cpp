@@ -40,7 +40,7 @@ void Projectile::Update(float dt)
 }
 void Projectile::OnCollision(Actor* actor)
 {
-	if (actor->GetType() == eType::ENEMY)
+	if (actor->GetType() == eType::ENEMY|| actor->GetType() == eType::BOSS|| actor->GetType() == eType::TIE)
 	{
 		m_destroy = true;
 
